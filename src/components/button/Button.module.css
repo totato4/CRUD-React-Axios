@@ -1,0 +1,11 @@
+.inputButton {
+  background: 1px solid blue;
+  background-color: rgb(59, 96, 207);
+  padding: 4px;
+  border-radius: 6px;
+  color: white;
+}
+
+.inputLoading {
+  opacity: 0.5;
+}

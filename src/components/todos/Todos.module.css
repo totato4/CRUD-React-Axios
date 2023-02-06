@@ -1,0 +1,35 @@
+.title {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 24px;
+  padding-bottom: 5px;
+  color: black;
+  white-space: nowrap;
+}
+
+.active {
+  font-size: 14px;
+}
+
+.wrapper {
+  display: flex;
+  column-gap: 20px;
+}
+
+.container {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon {
+  margin: auto;
+}
+
+.todoLoading {
+  color: rgb(31, 31, 31);
+  opacity: 0.8;
+  transition: all;
+  transition-duration: 0.4ms;
+}

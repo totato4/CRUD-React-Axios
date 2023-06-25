@@ -1,13 +1,15 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import styles from "./input.module.css";
 import debounce from "lodash.debounce";
+import Button from "./../button/Button";
 
 type props = {
   inputValue: string;
   setInputValue: any;
+  children?: ReactNode;
 };
 
-const Input: React.FC<props> = ({ inputValue, setInputValue }) => {
+const Input: React.FC<props> = ({ inputValue, setInputValue, children }) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [value, setValue] = React.useState("");
 
@@ -29,7 +31,7 @@ const Input: React.FC<props> = ({ inputValue, setInputValue }) => {
   };
 
   return (
-    <div>
+    <div className={styles.wrapper}>
       <input
         ref={inputRef}
         className={styles.input}
@@ -38,6 +40,7 @@ const Input: React.FC<props> = ({ inputValue, setInputValue }) => {
         placeholder="Введите название..."
         value={inputValue}
       />
+      {children}
     </div>
   );
 };

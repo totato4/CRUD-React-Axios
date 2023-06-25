@@ -1,6 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import styles from "./Todos.module.css";
+import { useAppDispatch } from "../RTK/store";
+import { useAppSelector } from "../RTK/store";
+import {
+  fetchDeleteTodo,
+  toggleComplete,
+  toggleStatus,
+} from "../RTK/todoSlice/todoSlice";
 
 type todosProps = {
   completed: boolean;
@@ -10,64 +17,43 @@ type todosProps = {
 };
 
 const Todos = ({ id, completed, title, deleteTodo, userId }: any) => {
-  const [checkboxValue, setCheckboxValue] = React.useState<boolean>(completed);
+  const dispatch = useAppDispatch();
+  const selectedTodo = useAppSelector((state) => state.todoSlice.todo);
+  const { loadItem } = useAppSelector((state) => state.todoSlice);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const completedProp = completed;
-
-  // update
-  const toggleCompleteTodo = async () => {
-    setIsLoading(true);
-    setCheckboxValue(!checkboxValue);
-    const res = await axios({
-      method: "patch",
-      url: `https://jsonplaceholder.typicode.com/todos/${id}`,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: {
-        id: id,
-        completed: !checkboxValue,
-        title: title,
-        userId: userId,
-      },
-    })
-      .then((response) => {
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setCheckboxValue(!checkboxValue);
-        setIsLoading(false);
-        console.log(error.message);
-      });
-  };
+  useEffect(() => {
+    console.log(loadItem);
+    // @ts-ignore
+    if (id == loadItem) {
+      console.log(true);
+    }
+  }, [loadItem]);
 
   return (
     <div className={styles.wrapper}>
       <label className={styles.container}>
-        {isLoading ? (
-          <input
-            type="checkbox"
-            checked={checkboxValue}
-            className="checkbox"
-            disabled
-          />
-        ) : (
-          <input
-            type="checkbox"
-            onChange={() => toggleCompleteTodo()}
-            checked={checkboxValue}
-            className="checkbox"
-          />
-        )}
+        <input
+          type="checkbox"
+          onChange={() => dispatch(toggleStatus({ id, completed, title }))}
+          checked={completed}
+          className="checkbox"
+        />
+
         <span
           className={
-            isLoading ? styles.title + " " + styles.todoLoading : styles.title
+            id == loadItem
+              ? styles.title + " " + styles.todoLoading
+              : styles.title
           }
         >
           {title}
         </span>
       </label>
-      <div onClick={() => deleteTodo(id)} className={styles.icon}>
+      <div
+        onClick={() => dispatch(fetchDeleteTodo(id))}
+        className={styles.icon}
+      >
         <svg
           fill="#000000"
           version="1.1"

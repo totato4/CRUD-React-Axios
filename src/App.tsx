@@ -3,6 +3,10 @@ import Button from "./components/button/Button";
 import Input from "./components/input/Input";
 import Todos from "./components/todos/Todos";
 import axios from "axios";
+import { selectTodos } from "./components/RTK/todoSlice/Selectors";
+import { useAppSelector, useAppDispatch } from "./components/RTK/store";
+import { Itodo } from "./components/RTK/todoSlice/types";
+import { fetchTodo } from "./components/RTK/todoSlice/todoSlice";
 
 type todosProps = {
   completed: boolean;
@@ -11,7 +15,7 @@ type todosProps = {
   userId: number;
 };
 
-function App() {
+const App: React.FC = () => {
   const [todos, setTodos] = React.useState<todosProps[] | false>(false);
 
   React.useEffect(() => {
@@ -27,66 +31,40 @@ function App() {
   const [post, setPost] = React.useState<boolean>(false);
   const createPost = () => setPost(!post);
 
-  const createTodo = async () => {
-    setCreateLoading(true);
-    axios({
-      method: "post",
-      url: "https://jsonplaceholder.typicode.com/todos",
-      data: {
-        title: inputValue,
-        completed: false,
-      },
-    })
-      .then((response) => {
-        console.log(response.data);
-        setCreateLoading(false);
-      })
-      .catch((error: any) => {
-        console.log(error);
-        setCreateLoading(false);
-      });
-  };
+  // FETCH TODO
+  const dispatch = useAppDispatch();
 
-  //  delete
-  const deleteTodo = async (id: number) => {
-    const res = await axios({
-      method: "delete",
-      url: `https://jsonplaceholder.typicode.com/todos/${id}`,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => {
-        if (todos) {
-          const FilteredTOdos = () => {
-            return todos.filter((obj) => obj.id !== id);
-          };
-          setTodos(FilteredTOdos);
-        }
-      })
-      .catch((error) => {
-        alert("Не удалось удалить элемент списка дел");
-        console.log(error.message);
-      });
-  };
+  const myTodo = useAppSelector(selectTodos);
+  const status = useAppSelector((state) => state.todoSlice.status);
+
+  React.useEffect(() => {
+    dispatch(fetchTodo());
+  }, []);
+  React.useEffect(() => {}, [myTodo]);
 
   return (
     <div className="App">
-      <div className="input-wrapper">
-        <Input inputValue={inputValue} setInputValue={setInputValue} />
-        <div onClick={createTodo}>
-          <Button createLoading={createLoading} />
+      <div className="todos">
+        <h1>FETCH todo</h1>
+        <Input inputValue={inputValue} setInputValue={setInputValue}>
+          <Button text={inputValue} />
+        </Input>
+        <div role="items" className="todos-wrapper">
+          {status == "error" ? (
+            <div
+              onClick={() => {
+                fetchTodo();
+              }}
+            >
+              Попробовать снова
+            </div>
+          ) : (
+            myTodo.map((obj, i) => <Todos key={i} {...obj} />)
+          )}
         </div>
       </div>
-      {todos ? (
-        todos.map((obj: any, i): any => (
-          <Todos key={i} {...obj} deleteTodo={deleteTodo} />
-        ))
-      ) : (
-        <div>loading...</div>
-      )}
     </div>
   );
-}
+};
 
 export default App;

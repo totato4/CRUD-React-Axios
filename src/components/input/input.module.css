@@ -1,6 +1,7 @@
 .wrapper {
   display: flex;
   width: 500px;
+  column-gap: 20px;
 }
 .input {
   padding-left: 12px;

@@ -8,6 +8,7 @@ import { useAppSelector, useAppDispatch } from "./components/RTK/store";
 import { Itodo } from "./components/RTK/todoSlice/types";
 import { fetchTodo } from "./components/RTK/todoSlice/todoSlice";
 import Footer from "./components/Footer/Footer";
+import Header from "./components/Header/Header";
 
 type todosProps = {
   completed: boolean;
@@ -31,7 +32,7 @@ const App: React.FC = () => {
 
   return (
     <div className="wrapper">
-      <header className="header">header</header>
+      <Header />
       <main className="main">
         <div className="todos">
           <h1>FETCH todo</h1>
@@ -53,9 +54,7 @@ const App: React.FC = () => {
           </div>
         </div>
       </main>
-      <footer className="footer">
-        <Footer />
-      </footer>
+      <Footer />
     </div>
   );
 };
